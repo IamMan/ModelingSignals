@@ -14,6 +14,9 @@ namespace WindowsFormsApplication1
     public partial class Form1 : Form
     {
         private const int STEP = 20;
+        private MethodResult _p1 = null;
+        private MethodResult _p2 = null;
+        private MethodResult _p3 = null;
 
         public Form1()
         {
@@ -22,34 +25,12 @@ namespace WindowsFormsApplication1
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            string type = textType(textBox1.Text.Replace(" ",""));
-            string binStr = "";
-            if (type.Equals("bad"))
-            {
-                Application.Exit();
-            }
-            if (type.Equals("hex"))
-            {
-                textBox2.Text = hexToBin(textBox1.Text);
-                binStr = textBox2.Text.Replace(" ","");
-            }
-            if (type.Equals("bin"))
-            {
-                textBox2.Text = binToHex(textBox1.Text);
-                binStr = textBox1.Text.Replace(" ", "");
-            }
-            labelBytes.Text = Convert.ToString(binStr.Length /8.0);
-            drawOs(panelOs, panelOs.CreateGraphics(), binStr, panelOs.Height);
-            CodingMethod manchMethod = new ManchesterMethod(STEP);
-            manchMethod.drawSignal(panel2, binStr, 0, 10, 67);
-            CodingMethod amiMethod = new AmiMethod(STEP);
-            amiMethod.drawSignal(panel3, binStr, 0, 10, 67);
-            CodingMethod bipolarMethod = new BipolarRZ(STEP);
-            bipolarMethod.drawSignal(panel4, binStr, 0, 10, 67);
+            
         }
 
-        private void drawOs(Panel can, Graphics g, string binStr, int height)
+        private void drawOs(Panel can, string binStr, int height)
         {
+            Graphics g = can.CreateGraphics();
             g.Clear(Color.White);
             Pen linePen = new Pen(new HatchBrush(HatchStyle.DarkVertical, Color.Black), 1);
             float[] dashValues = {5, 2};
@@ -182,6 +163,56 @@ namespace WindowsFormsApplication1
 
             return (char)('A' + (num - 10));
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string type = textType(textBox1.Text.Replace(" ", ""));
+            string binStr = "";
+            int c = int.Parse(textBox3.Text) * 1000000;
+            if (type.Equals("bad"))
+            {
+                Application.Exit();
+            }
+            if (type.Equals("hex"))
+            {
+                textBox2.Text = hexToBin(textBox1.Text);
+                binStr = textBox2.Text.Replace(" ", "");
+            }
+            if (type.Equals("bin"))
+            {
+                textBox2.Text = binToHex(textBox1.Text);
+                binStr = textBox1.Text.Replace(" ", "");
+            }
+            labelBytes.Text = Convert.ToString(binStr.Length / 8.0);
+            drawOs(panelOs, binStr, panelOs.Height);
+            CodingMethod manchMethod = new ManchesterMethod(STEP);
+            _p1 = manchMethod.drawSignal(panel1, binStr, 0, 10, 67, c);
+            CodingMethod amiMethod = new AmiMethod(STEP);
+            _p2 = amiMethod.drawSignal(panel2, binStr, 0, 10, 67, c);
+            CodingMethod potentialMethod = new PotentialMethod(STEP);
+            _p3 = potentialMethod.drawSignal(panel3, binStr, 0, 10, 67, c);
+        }
+
+        private void panel1_Click(object sender, EventArgs e)
+        {
+            if(_p1 == null) return;
+            Results tmp = new Results(_p1);
+            tmp.ShowDialog();
+        }
+
+        private void panel2_Click(object sender, EventArgs e)
+        {
+            if (_p2 == null) return;
+            Results tmp = new Results(_p2);
+            tmp.ShowDialog();
+        }
+
+        private void panel3_Click(object sender, EventArgs e)
+        {
+            if (_p3 == null) return;
+            Results tmp = new Results(_p3);
+            tmp.ShowDialog();
         }
     }
 }

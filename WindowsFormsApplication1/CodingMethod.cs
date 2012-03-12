@@ -17,7 +17,7 @@ namespace WindowsFormsApplication1
             STEP = step;
         }
 
-        public abstract void drawSignal(Panel can, string signal, int x, int minLevel, int height);
+        public abstract MethodResult drawSignal(Panel can, string signal, int x, int minLevel, int height, int c);
         protected void drawLines(Graphics g, int x, int panHeight)
         {
             Pen linePen = new Pen(Color.Black, 1);
