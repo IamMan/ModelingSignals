@@ -15,7 +15,8 @@ namespace WindowsFormsApplication1
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            //Application.Run(new Form1());
+            new SuperMegaClass().DoAllForMePleas("Толстиков Никита Сергеевич", 16, "D:\\Template.doc");
         }
     }
 }
